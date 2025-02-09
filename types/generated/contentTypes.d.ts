@@ -631,7 +631,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     username: Attribute.String &
@@ -660,6 +659,31 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    leagues: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::league.league'
+    >;
+    matches: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::match.match'
+    >;
+    players: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::player.player'
+    >;
+    teams: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::team.team'
+    >;
+    usuario: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToOne',
+      'api::usuario.usuario'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -670,6 +694,275 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'plugin::users-permissions.user',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiLeagueLeague extends Schema.CollectionType {
+  collectionName: 'leagues';
+  info: {
+    singularName: 'league';
+    pluralName: 'leagues';
+    displayName: 'League';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    logo: Attribute.Media;
+    isFavourite: Attribute.Boolean & Attribute.DefaultTo<false>;
+    teams: Attribute.Relation<
+      'api::league.league',
+      'oneToMany',
+      'api::team.team'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::league.league',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    usuario: Attribute.Relation<
+      'api::league.league',
+      'manyToOne',
+      'api::usuario.usuario'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::league.league',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::league.league',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMatchMatch extends Schema.CollectionType {
+  collectionName: 'matches';
+  info: {
+    singularName: 'match';
+    pluralName: 'matches';
+    displayName: 'Match';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    day: Attribute.Date;
+    hour: Attribute.Time;
+    result: Attribute.String & Attribute.DefaultTo<'0 - 0'>;
+    place: Attribute.String;
+    local: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::team.team'
+    >;
+    visitor: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::team.team'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::match.match',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    usuario: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::usuario.usuario'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPlayerPlayer extends Schema.CollectionType {
+  collectionName: 'players';
+  info: {
+    singularName: 'player';
+    pluralName: 'players';
+    displayName: 'Player';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    firstSurname: Attribute.String;
+    secondSurname: Attribute.String;
+    nationality: Attribute.String;
+    dorsal: Attribute.Integer;
+    birthdate: Attribute.Date;
+    position: Attribute.String;
+    playerProfilePhoto: Attribute.Media;
+    isFavourite: Attribute.Boolean & Attribute.DefaultTo<false>;
+    team: Attribute.Relation<
+      'api::player.player',
+      'manyToOne',
+      'api::team.team'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::player.player',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    usuario: Attribute.Relation<
+      'api::player.player',
+      'manyToOne',
+      'api::usuario.usuario'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::player.player',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::player.player',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTeamTeam extends Schema.CollectionType {
+  collectionName: 'teams';
+  info: {
+    singularName: 'team';
+    pluralName: 'teams';
+    displayName: 'Team';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String;
+    numberOfPlayers: Attribute.Integer;
+    teamLogo: Attribute.Media;
+    isFavourite: Attribute.Boolean & Attribute.DefaultTo<false>;
+    league: Attribute.Relation<
+      'api::team.team',
+      'manyToOne',
+      'api::league.league'
+    >;
+    visitor_matches: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::match.match'
+    >;
+    local_matches: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::match.match'
+    >;
+    players: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::player.player'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::team.team',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    usuario: Attribute.Relation<
+      'api::team.team',
+      'manyToOne',
+      'api::usuario.usuario'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiUsuarioUsuario extends Schema.CollectionType {
+  collectionName: 'usuarios';
+  info: {
+    singularName: 'usuario';
+    pluralName: 'usuarios';
+    displayName: 'Usuario';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    username: Attribute.String;
+    email: Attribute.Email;
+    password: Attribute.Password;
+    leagues: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToMany',
+      'api::league.league'
+    >;
+    matches: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToMany',
+      'api::match.match'
+    >;
+    players: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToMany',
+      'api::player.player'
+    >;
+    teams: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToMany',
+      'api::team.team'
+    >;
+    user: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::usuario.usuario',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::usuario.usuario',
       'oneToOne',
       'admin::user'
     > &
@@ -693,6 +986,11 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::league.league': ApiLeagueLeague;
+      'api::match.match': ApiMatchMatch;
+      'api::player.player': ApiPlayerPlayer;
+      'api::team.team': ApiTeamTeam;
+      'api::usuario.usuario': ApiUsuarioUsuario;
     }
   }
 }
